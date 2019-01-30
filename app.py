@@ -60,11 +60,23 @@ def populate_db():
     table_body = table.find('tbody')
     rows = table_body.find_all('tr')
     exam_list = list()
+    existing_exam = list()
+
     for row in rows:
         cols = row.find_all('td')
         cols = [x.text.strip() for x in cols]
-        tmp = Exam(cols[0], cols[1], cols[6], cols[7], cols[8])
-        exam_list.append(tmp)
+
+        course_code = cols[0]
+        if course_code in existing_exam:
+            # TODO check course have two exams or not
+            continue
+
+        # if course_code not exist append it
+        # and create an exam object for it
+        existing_exam.append(course_code)
+        exam_obj = Exam(course_code, cols[1], cols[6], cols[7], cols[8])
+        exam_list.append(exam_obj)
+
     return exams_schema.jsonify(exam_list)
 
 
