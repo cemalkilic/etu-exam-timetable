@@ -55,17 +55,16 @@ exams_schema = ExamSchema(many=True)
 def populate_db():
     r = requests.get(app.config['EXAMS_URL'])
     bs = BeautifulSoup(r.content, "lxml")
-    table_body = bs.find('table')
+    table = bs.find('table')
+    # to get rid of the first empty row
+    table_body = table.find('tbody')
     rows = table_body.find_all('tr')
     exam_list = list()
-    i = 0
     for row in rows:
         cols = row.find_all('td')
         cols = [x.text.strip() for x in cols]
-        if i != 0: # just a hacky fix
-            tmp = Exam(cols[0], cols[1], cols[6], cols[7], cols[8])
-            exam_list.append(tmp)
-        i = i + 1
+        tmp = Exam(cols[0], cols[1], cols[6], cols[7], cols[8])
+        exam_list.append(tmp)
     return exams_schema.jsonify(exam_list)
 
 
