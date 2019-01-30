@@ -77,6 +77,14 @@ def populate_db():
         exam_obj = Exam(course_code, cols[1], cols[6], cols[7], cols[8])
         exam_list.append(exam_obj)
 
+        # if there is any mutual courses (you should view the exam table)
+        # create a new exam for that one
+        mutual_course_code = cols[2]
+        if mutual_course_code != '':
+            another_exam = Exam(mutual_course_code, cols[1], cols[6], cols[7], cols[8])
+            exam_list.append(another_exam)
+            existing_exam.append(mutual_course_code)
+
     return exams_schema.jsonify(exam_list)
 
 
