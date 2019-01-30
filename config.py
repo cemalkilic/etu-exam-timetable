@@ -25,3 +25,6 @@ CSRF_SESSION_KEY = "my_very_secret_key"
 
 # Secret key for signing cookies
 SECRET_KEY = 'etu-abc-mirror'
+
+# URL for getting exam list
+EXAMS_URL = 'http://kayit.etu.edu.tr/ara_sinav_programi.php'
