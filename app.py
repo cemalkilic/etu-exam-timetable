@@ -66,15 +66,20 @@ def populate_db():
         cols = row.find_all('td')
         cols = [x.text.strip() for x in cols]
 
-        course_code = cols[0]
-        if course_code in existing_exam:
-            # TODO check course have two exams or not
+        # a quicky check
+        # it does not hurt to create
+        # a dict for this purpose
+        exam = {
+            "course_code"   : cols[0],
+            "exam_date"     : cols[6]
+        }
+        if exam in existing_exam:
             continue
 
         # if course_code not exist append it
         # and create an exam object for it
-        existing_exam.append(course_code)
-        exam_obj = Exam(course_code, cols[1], cols[6], cols[7], cols[8])
+        existing_exam.append(exam)
+        exam_obj = Exam(cols[0], cols[1], cols[6], cols[7], cols[8])
         exam_list.append(exam_obj)
 
         # if there is any mutual courses (you should view the exam table)
