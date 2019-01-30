@@ -19,15 +19,11 @@ app.config.from_object('config')
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
-# Build the database:
-# This will create the database file using SQLAlchemy
-db.create_all()
-
 
 # Define an Exam model
 class Exam(db.Model):
     exam_id = db.Column(db.Integer, primary_key=True)
-    course_code = db.Column(db.String, unique=True, nullable=False)
+    course_code = db.Column(db.String, nullable=False)
     course_name = db.Column(db.String)
     exam_date = db.Column(db.String)
     exam_day = db.Column(db.String)
@@ -50,6 +46,11 @@ class ExamSchema(Schema):
 
 exam_schema = ExamSchema()
 exams_schema = ExamSchema(many=True)
+
+
+# Build the database:
+# This will create the database file using SQLAlchemy
+db.create_all()
 
 
 def populate_db():
@@ -90,12 +91,38 @@ def populate_db():
             exam_list.append(another_exam)
             existing_exam.append(mutual_course_code)
 
+    # insert all exams to db
+    for exam in exam_list:
+        db.session.add(exam)
+    db.session.commit()
     return exams_schema.jsonify(exam_list)
 
 
 @app.route('/')
 def hello_world():
     return populate_db() # just to check if we
+
+
+@app.route('/exam/<course_code>')
+def course_exams(course_code):
+    # I assumed that no problem with turkish characters
+    # so BİL-361 input is welcomed however bil-361 is not
+    # TODO fix the problem with uppercasing turkish characters
+
+    # firstly, we need to check if course_code has the right syntax
+    content = course_code.split('-')
+
+    if len(content) != 2:
+        return "Course code must be like: ABC-123"
+
+    if len(content[0]) != 3 or len(content[1]) != 3:
+        return "Course code must be like: ABC-123"
+
+    c_code = content[0].upper() + ' ' + content[1].upper()
+
+    result = Exam.query.filter(Exam.course_code == c_code)
+
+    return exams_schema.jsonify(result)
 
 
 if __name__ == '__main__':
