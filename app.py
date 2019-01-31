@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, make_response
 
 # Import SQLAlchemy
 from flask_sqlalchemy import SQLAlchemy
@@ -110,19 +110,21 @@ def course_exams(course_code):
     # TODO fix the problem with uppercasing turkish characters
 
     # firstly, we need to check if course_code has the right syntax
-    content = course_code.split('-')
-
-    if len(content) != 2:
-        return "Course code must be like: ABC-123"
-
-    if len(content[0]) != 3 or len(content[1]) != 3:
-        return "Course code must be like: ABC-123"
-
-    c_code = content[0].upper() + ' ' + content[1].upper()
-
+    # content = course_code.split('-')
+    #
+    # if len(content) != 2:
+    #     return "Course code must be like: ABC-123"
+    #
+    # if len(content[0]) != 3 or len(content[1]) != 3:
+    #     return "Course code must be like: ABC-123"
+    #
+    # c_code = content[0].upper() + ' ' + content[1].upper()
+    c_code = course_code # TODO
     result = Exam.query.filter(Exam.course_code == c_code)
 
-    return exams_schema.jsonify(result)
+    resp = make_response(exams_schema.jsonify(result))
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
 
 
 if __name__ == '__main__':
