@@ -6,6 +6,9 @@ from flask_sqlalchemy import SQLAlchemy
 # Import flask-marshmallow for serializing/deserializing
 from flask_marshmallow import Marshmallow, Schema
 
+# Import heroku
+from flask_heroku import Heroku
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -18,6 +21,7 @@ app.config.from_object('config')
 # by modules and controllers
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
+heroku = Heroku(app)
 
 
 # Define an Exam model
