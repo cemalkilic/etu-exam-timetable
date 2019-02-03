@@ -91,9 +91,17 @@ def populate_db():
             exam_list.append(another_exam)
             existing_exam.append(mutual_course_code)
 
+    # this insertion should be done in
+    # more beautiful way
+    # but it's enough for now :(
+
     # insert all exams to db
+    # after checking it exists
     for exam in exam_list:
-        db.session.add(exam)
+        exists = Exam.query.filter(Exam.course_code == exam.course_code)\
+            .filter(Exam.exam_date == exam.exam_date).first()
+        if not exists:
+            db.session.add(exam)
     db.session.commit()
     return exams_schema.jsonify(exam_list)
 
