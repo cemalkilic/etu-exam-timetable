@@ -118,8 +118,7 @@ def hello_world():
 @app.route('/exam/<course_code>')
 def course_exams(course_code):
     # I assumed that no problem with turkish characters
-    # so BİL-361 input is welcomed however bil-361 is not
-
+ 	# so BIL-361 input is welcomed however bil-361 is not
     # firstly, we need to check if course_code has the right syntax
     content = course_code.split(' ')
     #
@@ -145,4 +144,4 @@ def course_exams(course_code):
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')
